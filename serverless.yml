@@ -1,0 +1,36 @@
+service: fodmap-es
+
+frameworkVersion: "=1.28.0"
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: prod
+  region: us-east-2
+  profile: serverless-admin
+
+plugins:
+  - serverless-finch
+  - serverless-api-cloudfront
+
+custom:
+  client:
+    bucketName: fodmap-es
+    distributionFolder: build/
+    indexDocument: index.html
+    errorDocument: index.html
+
+  apiCloudFront:
+    domain: fodmap.micheledisalvatore.it
+    certificate: arn:aws:acm:us-east-1:000000000000:certificate/00000000-1111-2222-3333-444444444444
+    waf: 00000000-0000-0000-0000-000000000000
+    compress: true
+    logging:
+      bucket: my-bucket.s3.amazonaws.com
+      prefix: my-prefix
+    cookies: none
+    headers:
+      - x-api-key
+    querystring:
+      - page
+      - per_page
