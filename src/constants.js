@@ -1255,3 +1255,8 @@ export const INGREDIENTS = [
     group: VEGETABLE
   }
 ];
+
+export const SORT_BY = {
+  NAME: 'name',
+  INTOLERANCE: 'intollerance',
+};
