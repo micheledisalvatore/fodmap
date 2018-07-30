@@ -48,9 +48,13 @@ class App extends Component {
             [PERMITTED]: -1,
             [RESTRICTED]: 0,
             [TO_AVOID]: 1,
+            [SUSPICIOUS]: 2,
           }
           sorting = mapTypes[a.type] - mapTypes[b.type]
 
+          if(a.type === b.type && a.type === SUSPICIOUS) {
+            sorting = a.events - b.events
+          }
 
           if(this.state.sortDesc) {
             sorting *= -1
@@ -103,7 +107,6 @@ class App extends Component {
         ingredients,
       }), () => {
         this.showAlert()
-        e.currentTarget.value = '';
         this.hideTag();
         localStorage.setItem('ingredients', JSON.stringify(this.state.localIngredients));
       })
@@ -138,9 +141,7 @@ class App extends Component {
           <Label left htmlFor="search" onClick={this.show('search')}><FontAwesomeIcon icon={faSearch} /></Label>
           <Label right htmlFor="add" onClick={this.show('add')}><FontAwesomeIcon icon={faPlusCircle} style={{ order: 2 }} /></Label>
         </InputsGroup>
-        <AlertSuccess isOpen={this.state.isAlertVisible}>
-          Food added successfully!
-        </AlertSuccess>
+        <AlertSuccess isOpen={this.state.isAlertVisible}>Food added successfully!</AlertSuccess>
         <TableIngredients onClick={this.hideTag} actions={{ sortBy: this.sortBy }} ingredients={this.filteredIngredients} sortBy={this.state.sortBy} sortDesc={this.state.sortDesc} />
       </div>
     );
