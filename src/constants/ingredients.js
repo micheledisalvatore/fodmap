@@ -1,8 +1,6 @@
 export const TO_AVOID = 'to avoid';
 export const PERMITTED = 'permitted';
 export const RESTRICTED = 'restricted';
-export const SUSPICIOUS = 'suspicious';
-export const CUSTOM = 'custom';
 const CEREAL = 'cereal';
 const FRUIT = 'fruit';
 const VEGETABLE = 'vegetable';
@@ -883,6 +881,11 @@ export const INGREDIENTS = [
     name: 'Nueces en general 2 cucharadas (no pistaches ni nuez de la india)',
     type: RESTRICTED,
     group: FAT
+  },
+  {
+    name: 'ó 1⁄2 t',
+    type: PERMITTED,
+    group: VEGETABLE
   },
   {
     name: 'Orégano',

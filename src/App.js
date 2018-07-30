@@ -1,18 +1,26 @@
 import React, { Component } from 'react';
-import { Table, Input } from 'reactstrap';
 import diacritics from 'diacritics';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { INGREDIENTS, TO_AVOID, RESTRICTED, PERMITTED, SORT_BY } from './constants';
-import { Dot, InputWrapper, SortIcon } from './App.styled';
+
+import { INGREDIENTS, TO_AVOID, RESTRICTED, PERMITTED, SORT_BY, SUSPICIOUS, CUSTOM } from './constants';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { AlertSuccess, InputsGroup, SearchInput, AddInput, Label } from './App.styled';
+
+import TableIngredients from './components/TableIngredients'
 
 class App extends Component {
   constructor(props) {
     super(props);
 
+    const localIngredients = JSON.parse(localStorage.getItem('ingredients')) || [];
+
     this.state = {
-      ingredients: INGREDIENTS,
+      ingredients: INGREDIENTS.concat(localIngredients),
+      localIngredients,
       sortBy: SORT_BY.NAME,
       sortDesc: false,
+      isAlertVisible: false,
     }
   }
 
@@ -20,8 +28,8 @@ class App extends Component {
     let ingredients = this.state.ingredients;
 
     if(this.state.query) {
-      const re = new RegExp(this.state.query, 'gi');
-      ingredients.filter(ingredient => diacritics.remove(ingredient.name).match(re));
+      const re = new RegExp(this.state.query, 'gmi');
+      ingredients = ingredients.filter(ingredient => re.test(diacritics.remove(ingredient.name)) || re.test(ingredient.name));
     }
 
     if(this.state.sortBy) {
@@ -29,6 +37,10 @@ class App extends Component {
         let sorting = 0;
         if(this.state.sortBy === SORT_BY.NAME) {
           sorting = a.name.localeCompare(b.name)
+
+          if(this.state.sortDesc) {
+            sorting *= -1
+          }
         }
 
         if(this.state.sortBy === SORT_BY.INTOLERANCE) {
@@ -38,10 +50,15 @@ class App extends Component {
             [TO_AVOID]: 1,
           }
           sorting = mapTypes[a.type] - mapTypes[b.type]
-        }
 
-        if(this.state.sortDesc) {
-          sorting *= -1
+
+          if(this.state.sortDesc) {
+            sorting *= -1
+          }
+
+          if(sorting === 0) {
+            sorting = a.name.localeCompare(b.name)
+          }
         }
 
         return sorting;
@@ -58,45 +75,73 @@ class App extends Component {
     this.setState({ query: escaped })
   }
 
+  add = e => {
+    const { value } = e.currentTarget;
+
+    if (e.key === 'Enter') {
+      const localIngredients = this.state.localIngredients
+      const localIngredientIndex = this.state.localIngredients.findIndex(ingredient => ingredient.name === value)
+
+      if(localIngredientIndex === -1) {
+        const newIngredient = {
+          name: value,
+          type: SUSPICIOUS,
+          group: CUSTOM,
+          events: 1,
+        }
+        localIngredients.push(newIngredient)
+      } else {
+        localIngredients[localIngredientIndex] = {
+          ...localIngredients[localIngredientIndex],
+          events: ++localIngredients[localIngredientIndex].events,
+        }
+      }
+
+      const ingredients = INGREDIENTS.concat(localIngredients);
+      this.setState(({
+        localIngredients,
+        ingredients,
+      }), () => {
+        this.showAlert()
+        e.currentTarget.value = '';
+        this.hideTag();
+        localStorage.setItem('ingredients', JSON.stringify(this.state.localIngredients));
+      })
+    }
+  }
+
   sortBy = sortBy => () => {
     this.setState(state => ({ sortBy, sortDesc: state.sortBy !== sortBy || !this.state.sortDesc}))
   }
 
-  getDotColor = type => {
-    switch(type) {
-      case TO_AVOID :
-        return 'red';
-      case RESTRICTED :
-        return 'yellow';
-      case PERMITTED :
-        return 'green';
-      default :
-        return 'grey';
+  show = tag => () => {
+    this.setState({ showTag: tag })
+  }
+
+  hideTag = () => {
+    if(this.state.showTag) {
+      this.setState({ showTag: undefined });
     }
+  }
+
+  showAlert = () => {
+    this.setState({ isAlertVisible: true });
+    window.setTimeout(() => this.setState({ isAlertVisible: false }), 2000)
   }
 
   render () {
     return (
       <div>
-        <InputWrapper>
-          <Input type="search" placeholder="Search..." onChange={this.search} />
-        </InputWrapper>
-        <Table>
-          <thead>
-            <tr>
-              <th onClick={this.sortBy(SORT_BY.NAME)}>Name <SortIcon width="13" height="13" up={this.state.sortBy === SORT_BY.NAME && this.state.sortDesc} down={this.state.sortBy === SORT_BY.NAME && !this.state.sortDesc} /></th>
-              <th onClick={this.sortBy(SORT_BY.INTOLERANCE)}><SortIcon width="13" height="13" up={this.state.sortBy === SORT_BY.INTOLERANCE && this.state.sortDesc} down={this.state.sortBy === SORT_BY.INTOLERANCE && !this.state.sortDesc} /></th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.filteredIngredients.map(ingredient => (
-              <tr key={ingredient.name}>
-                <td>{ingredient.name}</td>
-                <td><Dot color={this.getDotColor(ingredient.type)} /></td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <InputsGroup>
+          <SearchInput visible={this.state.showTag === 'search'} type="search" placeholder="Search..." onChange={this.search} required id="search" />
+          <AddInput visible={this.state.showTag === 'add'} type="text" placeholder="Add suspicious food..." onKeyDown={this.add} required id="add" />
+          <Label left htmlFor="search" onClick={this.show('search')}><FontAwesomeIcon icon={faSearch} /></Label>
+          <Label right htmlFor="add" onClick={this.show('add')}><FontAwesomeIcon icon={faPlusCircle} style={{ order: 2 }} /></Label>
+        </InputsGroup>
+        <AlertSuccess isOpen={this.state.isAlertVisible}>
+          Food added successfully!
+        </AlertSuccess>
+        <TableIngredients onClick={this.hideTag} actions={{ sortBy: this.sortBy }} ingredients={this.filteredIngredients} sortBy={this.state.sortBy} sortDesc={this.state.sortDesc} />
       </div>
     );
   }
