@@ -3,14 +3,16 @@ import diacritics from 'diacritics';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
+
+import Add from './components/Add';
 
 import { INGREDIENTS, TO_AVOID, RESTRICTED, PERMITTED, SORT_BY, SUSPICIOUS, CUSTOM } from './constants';
-import { AlertSuccess, InputsGroup, SearchInput, AddInput, Label } from './App.styled';
+import { AlertSuccess, InputsGroup, SearchInput, Label } from './App.styled';
 
 import TableIngredients from './components/TableIngredients';
 
-const findLocalIngredientIndex = (localIngredients, value) => localIngredients.findIndex(({ name }) => name === value);
+const findIngredientIndex = (list, value) => list.findIndex(({ name }) => name === value);
 const isNameMatching = (regEx, name) => regEx.test(diacritics.remove(name)) || regEx.test(name);
 
 class App extends Component {
@@ -26,6 +28,13 @@ class App extends Component {
       sortDesc: false,
       isAlertVisible: false,
     };
+
+    this.search = this.search.bind(this);
+    this.add = this.add.bind(this);
+    this.sortBy = this.sortBy.bind(this);
+    this.show = this.show.bind(this);
+    this.hideTag = this.hideTag.bind(this);
+    this.showAlert = this.showAlert.bind(this);
   }
 
   get filteredIngredients() {
@@ -77,7 +86,7 @@ class App extends Component {
     return newIngredients;
   }
 
-  search = e => {
+  search(e) {
     const { value } = e.currentTarget;
     const escaped = value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 
@@ -86,41 +95,37 @@ class App extends Component {
     });
   }
 
-  add = e => {
-    const { value } = e.currentTarget;
+  add(value) {
+    const { localIngredients } = this.state;
+    const localIngredientIndex = findIngredientIndex(localIngredients, value);
 
-    if (e.key === 'Enter') {
-      const { localIngredients } = this.state;
-      const localIngredientIndex = findLocalIngredientIndex(localIngredients, value);
-
-      if (localIngredientIndex === -1) {
-        const newIngredient = {
-          name: value,
-          type: SUSPICIOUS,
-          group: CUSTOM,
-          events: 1,
-        };
-        localIngredients.push(newIngredient);
-      } else {
-        localIngredients[localIngredientIndex] = {
-          ...localIngredients[localIngredientIndex],
-          events: localIngredients[localIngredientIndex].events + 1,
-        };
-      }
-
-      const ingredients = INGREDIENTS.concat(localIngredients);
-      this.setState(({
-        localIngredients,
-        ingredients,
-      }), () => {
-        this.showAlert();
-        this.hideTag();
-        localStorage.setItem('ingredients', JSON.stringify(localIngredients));
-      });
+    if (localIngredientIndex === -1) {
+      const newIngredient = {
+        name: value,
+        type: SUSPICIOUS,
+        group: CUSTOM,
+        events: 1,
+      };
+      localIngredients.push(newIngredient);
+    } else {
+      localIngredients[localIngredientIndex] = {
+        ...localIngredients[localIngredientIndex],
+        events: localIngredients[localIngredientIndex].events + 1,
+      };
     }
+
+    const ingredients = INGREDIENTS.concat(localIngredients);
+    this.setState(({
+      localIngredients,
+      ingredients,
+    }), () => {
+      this.showAlert();
+      this.hideTag();
+      localStorage.setItem('ingredients', JSON.stringify(localIngredients));
+    });
   }
 
-  sortBy = sortBy => {
+  sortBy(sortBy) {
     return () => {
       const { sortDesc } = this.state;
 
@@ -130,7 +135,7 @@ class App extends Component {
     };
   }
 
-  show = tag => {
+  show(tag) {
     return () => {
       this.setState({
         showTag: tag,
@@ -138,7 +143,7 @@ class App extends Component {
     };
   }
 
-  hideTag = () => {
+  hideTag() {
     const { showTag } = this.state;
 
     if (showTag) {
@@ -148,7 +153,7 @@ class App extends Component {
     }
   }
 
-  showAlert = () => {
+  showAlert() {
     this.setState({
       isAlertVisible: true,
     });
@@ -164,15 +169,8 @@ class App extends Component {
       <div>
         <InputsGroup>
           <SearchInput visible={showTag === 'search'} type="search" placeholder="Search..." onChange={this.search} required id="search" />
-          <AddInput visible={showTag === 'add'} type="text" placeholder="Add suspicious food..." onKeyDown={this.add} required id="add" />
           <Label left htmlFor="search" onClick={this.show('search')}><FontAwesomeIcon icon={faSearch} /></Label>
-          <Label right htmlFor="add" onClick={this.show('add')}><FontAwesomeIcon
-            icon={faPlusCircle}
-            style={{
-              order: 2,
-            }}
-          />
-          </Label>
+          <Add add={this.add} />
         </InputsGroup>
         <AlertSuccess isOpen={isAlertVisible}>Food added successfully!</AlertSuccess>
         <TableIngredients

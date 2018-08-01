@@ -18,6 +18,7 @@ Check the on line project: http://fodmap-es.s3-website.us-east-2.amazonaws.com/
 
 ## Todo list
 
+- [ ] add autocomplete when adding new food
 - [ ] after a new element is added, scroll to the added element
 - [ ] after a new element is added, delete the input content
 - [ ] option to edit an element
