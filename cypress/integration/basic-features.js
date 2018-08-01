@@ -38,7 +38,7 @@ describe('Basic features', () => {
   });
 
   it('should show the add box after clicking on the add icon', () => {
-    cy.get('label[for=add]').click();
+    cy.get('#add-button').click();
     cy.get('#add').should('be.visible', true);
   });
 

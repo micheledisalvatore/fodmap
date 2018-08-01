@@ -42,12 +42,12 @@ export class Add extends Component {
     const { isModalOpen } = this.state;
     return (
       <Fragment>
-        <PlusButton type="button" onClick={this.toggleModal}><FontAwesomeIcon icon={faPlusCircle} /></PlusButton>
+        <PlusButton type="button" onClick={this.toggleModal} id="add-button"><FontAwesomeIcon icon={faPlusCircle} /></PlusButton>
         <Modal isOpen={isModalOpen} toggle={this.toggleModal} onOpened={this.focusOnInputText}>
           <ModalBody>
             <Form onSubmit={this.add}>
               <FormGroup>
-                <Input type="text" name="add-food" id="add-food" placeholder="Add suspicious food..." innerRef={this.input} defaultValue="" />
+                <Input type="text" name="add" id="add" placeholder="Add suspicious food..." innerRef={this.input} />
               </FormGroup>
               <ButtonsGroup>
                 <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
