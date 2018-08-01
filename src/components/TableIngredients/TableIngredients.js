@@ -34,7 +34,7 @@ export const TableIngredients = ({ ingredients, actions, sortBy, sortDesc, onCli
     </thead>
     <tbody>
       {ingredients.map(ingredient => (
-        <tr key={ingredient.name}>
+        <tr key={ingredient.name} data-row>
           <td>
             <Dot color={getDotColor(ingredient.type)}>
               {ingredient.events ? ingredient.events : ''}

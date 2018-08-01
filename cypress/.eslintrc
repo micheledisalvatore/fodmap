@@ -1,0 +1,19 @@
+{
+    "env": {
+      "mocha": true,
+      "cypress/globals": true
+    },
+    "globals": {
+      "cy": true,
+      "Cypress": true,
+      "expect": true
+    },
+    "plugins": [
+      "cypress",
+      "chai-friendly"
+    ],
+    "rules": {
+      "no-unused-expressions": 0,
+      "chai-friendly/no-unused-expressions": 2
+    }
+  }
