@@ -1,12 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import diacritics from 'diacritics';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Provider } from 'react-redux';
 
 import Add from './components/Add';
-
+import { store } from './config/store';
 import { INGREDIENTS, TO_AVOID, RESTRICTED, PERMITTED, SORT_BY, SUSPICIOUS, CUSTOM } from './constants';
 import { AlertSuccess, InputsGroup, SearchInput, Label } from './App.styled';
 
@@ -166,23 +167,25 @@ class App extends Component {
     const { isAlertVisible, showTag, sortBy, sortDesc } = this.state;
 
     return (
-      <div>
-        <InputsGroup>
-          <SearchInput visible={showTag === 'search'} type="search" placeholder="Search..." onChange={this.search} required id="search" />
-          <Label left htmlFor="search" onClick={this.show('search')}><FontAwesomeIcon icon={faSearch} /></Label>
-          <Add add={this.add} />
-        </InputsGroup>
-        <AlertSuccess isOpen={isAlertVisible}>Food added successfully!</AlertSuccess>
-        <TableIngredients
-          onClick={this.hideTag}
-          actions={{
-            sortBy: this.sortBy,
-          }}
-          ingredients={this.filteredIngredients}
-          sortBy={sortBy}
-          sortDesc={sortDesc}
-        />
-      </div>
+      <Provider store={store}>
+        <Fragment>
+          <InputsGroup>
+            <SearchInput visible={showTag === 'search'} type="search" placeholder="Search..." onChange={this.search} required id="search" />
+            <Label left htmlFor="search" onClick={this.show('search')}><FontAwesomeIcon icon={faSearch} /></Label>
+            <Add add={this.add} />
+          </InputsGroup>
+          <AlertSuccess isOpen={isAlertVisible}>Food added successfully!</AlertSuccess>
+          <TableIngredients
+            onClick={this.hideTag}
+            actions={{
+              sortBy: this.sortBy,
+            }}
+            ingredients={this.filteredIngredients}
+            sortBy={sortBy}
+            sortDesc={sortDesc}
+          />
+        </Fragment>
+      </Provider>
     );
   }
 }
