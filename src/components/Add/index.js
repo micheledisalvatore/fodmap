@@ -1,3 +1,6 @@
-import { Add } from './Add';
+import { connect } from 'react-redux';
+import { Add, mapDispatchToProps } from './Add';
 
-export default Add;
+const connectedAdd = connect(null, mapDispatchToProps)(Add);
+
+export default connectedAdd;

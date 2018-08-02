@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Alert, Input } from 'reactstrap';
+import { Alert } from 'reactstrap';
 
 export const InputsGroup = styled('div')`
   display: flex;
@@ -19,7 +19,7 @@ export const Label = styled('label')`
   ${({ left }) => left && 'left: 0;'}
 `;
 
-export const SearchInput = styled(Input)`
+export const SearchInput = styled('input')`
   align-items: stretch;
   background-clip: padding-box;
   border-radius: .25rem;

@@ -1,8 +1,11 @@
 import React, { Component, Fragment } from 'react';
+import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 import { Button, Modal, ModalBody, Form, FormGroup, Input } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
+
+import { addToLocal } from '../../actions/food';
 
 import { ButtonsGroup, PlusButton } from './Add.styled';
 
@@ -40,6 +43,7 @@ export class Add extends Component {
 
   render() {
     const { isModalOpen } = this.state;
+
     return (
       <Fragment>
         <PlusButton type="button" onClick={this.toggleModal} id="add-button"><FontAwesomeIcon icon={faPlusCircle} /></PlusButton>
@@ -64,3 +68,7 @@ export class Add extends Component {
 Add.propTypes = {
   add: PropTypes.func.isRequired,
 };
+
+export const mapDispatchToProps = dispatch => ({
+  add: bindActionCreators(addToLocal, dispatch),
+});

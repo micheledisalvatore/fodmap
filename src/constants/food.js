@@ -1,6 +1,11 @@
+export const ADD_TO_LOCAL = 'FOOD::ADD_TO_LOCAL';
+export const SORT_BY = 'FOOD::SORT_BY';
+export const SEARCH = 'FOOD::SEARCH';
 export const TO_AVOID = 'to avoid';
 export const PERMITTED = 'permitted';
 export const RESTRICTED = 'restricted';
+export const SUSPICIOUS = 'suspicious';
+export const CUSTOM = 'custom';
 const CEREAL = 'cereal';
 const FRUIT = 'fruit';
 const VEGETABLE = 'vegetable';
@@ -292,7 +297,7 @@ export const INGREDIENTS = [
     group: BASE_FOOD,
   },
   {
-    name: 'Chocolate (con ingredientes permitidos) 30grs',
+    name: 'Chocolate (con foodes permitidos) 30grs',
     type: RESTRICTED,
     group: EXTRA,
   },
@@ -1129,7 +1134,7 @@ export const INGREDIENTS = [
     group: FAT,
   },
   {
-    name: 'Sorbete con ingredientes permitidos 1⁄2 t',
+    name: 'Sorbete con foodes permitidos 1⁄2 t',
     type: RESTRICTED,
     group: EXTRA,
   },
@@ -1256,7 +1261,7 @@ export const INGREDIENTS = [
   },
 ];
 
-export const SORT_BY = {
+export const SORT_BY_OPTIONS = {
   NAME: 'name',
   INTOLERANCE: 'intollerance',
 };
