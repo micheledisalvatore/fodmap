@@ -46,6 +46,15 @@ describe('Basic features', () => {
     cy.get('tbody').children().contains('nutella').should('have.length', 1);
   });
 
+  it('should show the success alert after a success adding', () => {
+    cy.get('.alert-success').should('to.be.visible');
+  });
+
+  it('should NOT show the success alert after 2 seconds', () => {
+    cy.wait(2500);
+    cy.get('.alert-success').should('not.to.be.visible');
+  });
+
   it('should show one result when searching for `nutella`', () => {
     cy.get('label[for=search]').click();
     cy.get('#search').type('nutella');

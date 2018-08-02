@@ -59,7 +59,7 @@ export class Header extends Component {
       <Fragment>
         <InputsGroup>
           <SearchInput visible={isSearchVisible} type="search" placeholder="Search..." onChange={this.search} id="search" innerRef={this.searchInput} />
-          <Label left htmlFor="search" onClick={this.showSearch}><FontAwesomeIcon icon={faSearch} /></Label>
+          <Label htmlFor="search" onClick={this.showSearch}><FontAwesomeIcon icon={faSearch} /></Label>
           <Add />
         </InputsGroup>
         <AlertSuccess isOpen={isAlertVisible}>Food added successfully!</AlertSuccess>
