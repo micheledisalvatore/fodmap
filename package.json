@@ -24,18 +24,21 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "serve": "serve -s build",
+    "serve:start": "serve -s build -p 5000 &",
+    "serve:stop": "if (lsof -t -i:5000); then kill $(lsof -t -i:5000); fi",
+    "serve:stop-and-start": "npm-run-all serve:stop serve:start",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "deploy": "serverless client deploy",
     "build-deploy": "npm-run-all build deploy",
     "lint": "eslint ./src --fix",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "cypress:lint": "eslint -c ./cypress/.eslintrc --fix --ext .js ./cypress"
+    "cypress:run": "cypress run --config baseUrl=http://localhost:5000",
+    "cypress:lint": "eslint -c ./cypress/.eslintrc --fix --ext .js ./cypress",
+    "precommit": "CI=true npm-run-all -p test build"
   },
   "devDependencies": {
-    "cypress": "^3.0.2",
+    "cypress": "3.0.2",
     "eslint": "^5.2.0",
     "eslint-config-airbnb": "^17.0.0",
     "eslint-plugin-chai-friendly": "^0.4.1",
@@ -43,6 +46,7 @@
     "eslint-plugin-import": "^2.13.0",
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-react": "^7.10.0",
+    "husky": "^0.14.3",
     "npm-run-all": "^4.1.3",
     "serverless-finch": "^2.2.0"
   }

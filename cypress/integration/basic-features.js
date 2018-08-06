@@ -1,6 +1,6 @@
 describe('Basic features', () => {
   it('visits the home page', () => {
-    cy.visit('/');
+    cy.visit('');
   });
 
   it('should NOT show the search box', () => {
@@ -32,12 +32,12 @@ describe('Basic features', () => {
   });
 
   it('should NOT show the search box after clicking outside of the input text if empty', () => {
-    cy.get('tbody').children().first().click();
+    cy.get('tbody').children().first().click({ force: true });
     cy.get('#search').should('not.be.visible', true);
   });
 
   it('should show the add box after clicking on the add icon', () => {
-    cy.get('#add-button').click();
+    cy.get('#add-button').click({ force: true });
     cy.get('#add').should('be.visible', true);
   });
 
@@ -61,6 +61,6 @@ describe('Basic features', () => {
     cy.get('tbody').children().should('have.length', 1);
     cy.get('#search').clear();
     cy.get('tbody').children().should('have.length.greaterThan', 1);
-    cy.get('tbody').children().first().click();
+    cy.get('tbody').children().first().click({ force: true });
   });
 });

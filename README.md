@@ -1,5 +1,13 @@
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
+## Requirements
+
+- Install git
+- Install node
+- Install npm or yarn
+- Install [serve](https://github.com/zeit/serve#readme)
+- Install [whatchman](https://facebook.github.io/watchman/docs/install.html)
+
 ## Commands
 
 Install dependencies: `$ yarn install`
