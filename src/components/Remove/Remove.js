@@ -1,11 +1,11 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import { Button, Modal, ModalBody, Form, FormGroup } from 'reactstrap';
+import { Button, Modal, ModalBody, Form } from 'reactstrap';
 
 import { removeFromLocal } from '../../actions/food';
 
-import { ButtonsGroup } from './Remove.styled';
+import { ButtonsGroup, Message } from './Remove.styled';
 import { hideRemoveModal } from '../../actions/app';
 
 export const Remove = ({ isVisible, closeModal, removeItem, removingFood }) => {
@@ -20,9 +20,7 @@ export const Remove = ({ isVisible, closeModal, removeItem, removingFood }) => {
     <Modal isOpen={isVisible} onClosed={closeModal}>
       <ModalBody>
         <Form onSubmit={remove}>
-          <FormGroup>
-            Do you want to remove {removingFood}?
-          </FormGroup>
+          <Message>Do you want to remove {removingFood}?</Message>
           <ButtonsGroup>
             <Button color="secondary" onClick={closeModal}>No</Button>
             <Button type="submit" color="primary">Yes</Button>
