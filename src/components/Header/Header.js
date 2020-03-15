@@ -59,7 +59,7 @@ export class Header extends Component {
     return (
       <Fragment>
         <InputsGroup>
-          <SearchInput visible={isSearchVisible} type="search" placeholder="Search..." onChange={this.search} id="search" innerRef={this.searchInput} />
+          <SearchInput visible={isSearchVisible} type="search" placeholder="Search..." onChange={this.search} id="search" innerRef={this.searchInput} autoComplete="off" />
           <Label htmlFor="search" onClick={this.showSearch}><FontAwesomeIcon icon={faSearch} /></Label>
           <Add />
         </InputsGroup>
