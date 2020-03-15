@@ -11,6 +11,7 @@ import { PERMITTED,
   SUSPICIOUS,
   CUSTOM,
   ADD_TO_LOCAL,
+  REMOVE_FROM_LOCAL,
   SEARCH } from '../../constants/food';
 
 const localList = JSON.parse(localStorage.getItem('food')) || [];
@@ -76,15 +77,30 @@ const filterFoodList = (state) => {
   return assocPath(['list'], newFoodList)(state);
 };
 
+const normalizeName = name => name.trim().toLowerCase();
+
+const updateLocalFoodList = (state, localFoodList) => {
+  let newState = state;
+  const list = INGREDIENTS.concat(localFoodList);
+
+  newState = assocPath(['list'], list)(newState);
+  newState = assocPath(['localFoodList'], localFoodList)(newState);
+
+  localStorage.setItem('food', JSON.stringify(localFoodList));
+
+  return newState;
+};
+
 const addToLocal = (state, { name }) => {
   let newState = state;
+  const cleanName = normalizeName(name);
 
   const { localFoodList } = newState;
-  const localFoodIndex = findFoodIndex(localFoodList, name);
+  const localFoodIndex = findFoodIndex(localFoodList, cleanName);
 
   if (localFoodIndex === -1) {
     const newFood = {
-      name,
+      name: cleanName,
       type: SUSPICIOUS,
       group: CUSTOM,
       events: 1,
@@ -97,12 +113,21 @@ const addToLocal = (state, { name }) => {
     };
   }
 
-  const list = INGREDIENTS.concat(localFoodList);
+  newState = updateLocalFoodList(newState, localFoodList);
 
-  newState = assocPath(['list'], list)(newState);
-  newState = assocPath(['localFoodList'], localFoodList)(newState);
+  return newState;
+};
 
-  localStorage.setItem('food', JSON.stringify(localFoodList));
+const removeFromLocal = (state, { name }) => {
+  let newState = state;
+  const { localFoodList } = newState;
+  const localFoodIndex = findFoodIndex(localFoodList, name);
+
+  if (localFoodIndex > -1) {
+    localFoodList.splice(localFoodIndex, 1);
+  }
+
+  newState = updateLocalFoodList(newState, localFoodList);
 
   return newState;
 };
@@ -131,6 +156,7 @@ const search = (state, { query }) => {
 
 export default handleActions({
   [ADD_TO_LOCAL]: addToLocal,
+  [REMOVE_FROM_LOCAL]: removeFromLocal,
   [SORT_BY]: sortBy,
   [SEARCH]: search,
 }, defaultState);

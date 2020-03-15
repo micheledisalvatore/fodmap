@@ -25,6 +25,12 @@ export const SortIcon = ({ width, height, up, down }) => (
   </Svg>
 );
 
+export const FoodName = styled.button`
+  border: none;
+  background: transparent;
+  padding: 0;
+`;
+
 SortIcon.propTypes = {
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,

@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import { search } from '../../actions/food';
 
 import Add from '../Add';
+import Remove from '../Remove';
 
 import { AlertSuccess, InputsGroup, SearchInput, Label } from './Header.styled';
 
@@ -53,7 +54,7 @@ export class Header extends Component {
 
   render() {
     const { isSearchVisible } = this.state;
-    const { isAlertVisible } = this.props;
+    const { alertMessage, isAlertVisible } = this.props;
 
     return (
       <Fragment>
@@ -62,13 +63,15 @@ export class Header extends Component {
           <Label htmlFor="search" onClick={this.showSearch}><FontAwesomeIcon icon={faSearch} /></Label>
           <Add />
         </InputsGroup>
-        <AlertSuccess isOpen={isAlertVisible}>Food added successfully!</AlertSuccess>
+        <AlertSuccess isOpen={isAlertVisible}>{alertMessage}</AlertSuccess>
+        <Remove />
       </Fragment>
     );
   }
 }
 
 Header.propTypes = {
+  alertMessage: PropTypes.string,
   isAlertVisible: PropTypes.bool,
   actions: PropTypes.shape({
     search: PropTypes.func.isRequired,
@@ -76,10 +79,12 @@ Header.propTypes = {
 };
 
 Header.defaultProps = {
+  alertMessage: '',
   isAlertVisible: false,
 };
 
 export const mapStateToProps = ({ app }) => ({
+  alertMessage: app.alertMessage,
   isAlertVisible: app.isAlertVisible,
 });
 

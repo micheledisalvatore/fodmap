@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Table } from 'reactstrap';
 import { bindActionCreators } from 'redux';
@@ -6,7 +6,8 @@ import { bindActionCreators } from 'redux';
 import { sortBy } from '../../actions/food';
 import { TO_AVOID, RESTRICTED, PERMITTED, SORT_BY_OPTIONS } from '../../constants/food';
 
-import { Dot, SortIcon } from './TableFood.styled';
+import { Dot, SortIcon, FoodName } from './TableFood.styled';
+import { showRemoveModal } from '../../actions/app';
 
 const getDotColor = (type) => {
   switch (type) {
@@ -21,8 +22,28 @@ const getDotColor = (type) => {
   }
 };
 
+const LONG_PRESS_TIMING = 500;
+
 export const TableFood = ({ foodList, actions, sortingBy, sortingDesc }) => {
   const handleSortByClick = key => () => actions.sortBy(key);
+  const [startLongPress, setStartLongPress] = useState('');
+
+  const onLongPress = () => {
+    actions.openModal(startLongPress);
+  };
+
+  useEffect(() => {
+    let timerId;
+    if (startLongPress) {
+      timerId = setTimeout(onLongPress, LONG_PRESS_TIMING);
+    } else {
+      clearTimeout(timerId);
+    }
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [startLongPress]);
 
   return (
     <Table>
@@ -46,7 +67,19 @@ export const TableFood = ({ foodList, actions, sortingBy, sortingDesc }) => {
               </Dot>
             </td>
             <td>
-              {food.name}
+              {!!food.events && (
+                <FoodName
+                  type="button"
+                  onMouseDown={() => setStartLongPress(food.name)}
+                  onMouseUp={() => setStartLongPress('')}
+                  onMouseLeave={() => setStartLongPress('')}
+                  onTouchStart={() => setStartLongPress(food.name)}
+                  onTouchEnd={() => setStartLongPress('')}
+                >
+                  {food.name}
+                </FoodName>
+              )}
+              {!food.events && food.name}
             </td>
           </tr>
         ))}
@@ -64,6 +97,7 @@ TableFood.propTypes = {
     }),
   ).isRequired,
   actions: PropTypes.shape({
+    openModal: PropTypes.func,
     sortBy: PropTypes.func,
   }).isRequired,
   sortingBy: PropTypes.string.isRequired,
@@ -78,6 +112,7 @@ export const mapStateToProps = ({ food }) => ({
 
 export const mapDispatchToProps = dispatch => ({
   actions: {
+    openModal: bindActionCreators(showRemoveModal, dispatch),
     sortBy: bindActionCreators(sortBy, dispatch),
   },
 });

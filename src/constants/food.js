@@ -1,4 +1,6 @@
 export const ADD_TO_LOCAL = 'FOOD::ADD_TO_LOCAL';
+export const REMOVE_FROM_LOCAL = 'FOOD::REMOVE_FROM_LOCAL';
+export const START_REMOVING_FROM_LOCAL = 'FOOD::START_REMOVING_FROM_LOCAL';
 export const SORT_BY = 'FOOD::SORT_BY';
 export const SEARCH = 'FOOD::SEARCH';
 export const TO_AVOID = 'to avoid';

@@ -1,2 +1,4 @@
 export const SHOW_ALERT = 'APP::SHOW_ALERT';
 export const HIDE_ALERT = 'APP::HIDE_ALERT';
+export const SHOW_REMOVE_MODAL = 'APP::SHOW_REMOVE_MODAL';
+export const HIDE_REMOVE_MODAL = 'APP::HIDE_REMOVE_MODAL';
