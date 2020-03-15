@@ -26,9 +26,10 @@ export const SortIcon = ({ width, height, up, down }) => (
 );
 
 export const FoodName = styled.button`
-  border: none;
   background: transparent;
+  border: none;
   padding: 0;
+  user-select: none;
 `;
 
 SortIcon.propTypes = {
