@@ -6,7 +6,11 @@ import reducers from '../../reducers';
 
 const sagaMiddleware = createSagaMiddleware();
 const middleware = applyMiddleware(sagaMiddleware);
-const devTools = window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__();
+const composeArgs = [middleware];
 
-export const store = createStore(reducers, compose(middleware, devTools));
+if (window.__REDUX_DEVTOOLS_EXTENSION__) {
+  composeArgs.push(window.__REDUX_DEVTOOLS_EXTENSION__());
+}
+
+export const store = createStore(reducers, compose(...composeArgs));
 export const runSaga = sagaMiddleware.run;
